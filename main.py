@@ -20,13 +20,13 @@ screen = pg.display.set_mode(size)
 clock = pg.time.Clock()
 FPS = 60
 done = 1
-myfont= pg.font.Font('breakout\\font\\neodgm_pro.ttf',30)#한글 도트 폰트 위치
+myfont= pg.font.Font('C:\\Users\\jihun\\Desktop\\breakout\\font\\neodgm_pro.ttf',30)#한글 도트 폰트 위치
 pg.display.set_caption("Break out")
 life = 3
 score = 0
 ball_vel = 6
 #소리
-game_over_sound = pg.mixer.Sound('breakout\\sounds\\mixkit-retro-arcade-game-over-470.wav')
+game_over_sound = pg.mixer.Sound('C:\\Users\\jihun\\Desktop\\breakout\\sounds\\mixkit-retro-arcade-game-over-470.wav')
 play_game_over_sound = 1
 class ball(pg.sprite.Sprite):
     def __init__(self,x,y,speed=6):
@@ -214,19 +214,19 @@ paddle_group.add(paddle1)
 #아이템 그룹 생성
 item_group = pg.sprite.Group()
 #하트
-heart = pg.image.load(r"C:\\Users\\jihun\\Desktop\\python\\벽돌깨기(동아리 부스용)\\brick_break_v1.2\\images\\heart.png").convert_alpha()#하트 사진 불러오기
+heart = pg.image.load(r"C:\\Users\\jihun\\Desktop\\breakout\\images\\heart.png").convert_alpha()#하트 사진 불러오기
 heart = pg.transform.scale(heart, (70,70))
 
 #게임 시작화면
-msg_game_start = myfont.render("게임을 시작하려면 스페이스 바를 누르세요",True,White)
+msg_game_start = myfont.render("press spacebar to start game",True,White)
 msg_game_start_rect = msg_game_start.get_rect(center=(size[0]/2, size[1]/2))
 game_start = False
 #게임 오버 화면
-msg_lose = myfont.render("게임 오버! 다시하려면 스페이스 바를 누르세요",True,White)
+msg_lose = myfont.render("GAME OVER!",True,White)
 msg_lose_rect = msg_lose.get_rect(center=(size[0]/2, size[1]/2))
 game_over = False
 #게임 성공 화면
-msg_win = myfont.render(f"축하합니다!",True,White)
+msg_win = myfont.render(f"CLEAR!",True,White)
 msg_win_rect = msg_win.get_rect(center=(size[0]/2, size[1]/2))
 
 #시간 체크
@@ -251,6 +251,7 @@ while done:
                     game_start = False
                     game_over = False
                     ball_group.empty()
+                    item_group.empty()
                     ball1 = ball(size[0]/2,size[1]/3*2)
                     ball_group.add(ball1)
                     brick_group.empty()
@@ -310,10 +311,10 @@ while done:
     msg_fps = myfont.render("fps : {}".format(int((clock.get_fps()))),True,White)
     screen.blit(msg_fps,(size[0]-200,70))
     #점수 표시
-    msg_score = myfont.render("점수 : {}점".format(score),True,White)
+    msg_score = myfont.render("score : {}".format(score),True,White)
     screen.blit(msg_score,(size[0]-200,10))
     #시간 표시
-    msg_time = myfont.render("시간 : {}초".format(int(time.time()-start_time)+1),True,White)
+    msg_time = myfont.render("time : {}s".format(int(time.time()-start_time)+1),True,White)
     screen.blit(msg_time,(size[0]-200,40))
     pg.display.flip()
     
