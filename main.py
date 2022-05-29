@@ -80,7 +80,7 @@ class ball(pg.sprite.Sprite):
         if collided_brick:
             global score
             self.brick_collision_count += len(collided_brick)
-            score += 50*len(collided_brick) +5*self.brick_collision_count# 기본 점수:50점|추가 점수:5점
+            score += 50*len(collided_brick) +10*self.brick_collision_count# 기본 점수:50점|추가 점수:10점
             
             collided_b = collided_brick[0].rect
             if self.degree<90:
@@ -112,7 +112,7 @@ class ball(pg.sprite.Sprite):
                     self.degree = 540-self.degree
                     self.x = collided_b.x-ball_size-self.vel/2
             #아이템 생성
-            if random.random()<0.15:#15%확률로 아이템 생성
+            if random.random()<0.0:#0%확률로 아이템 생성(아이템 생성 X)
                 item1 = item(collided_b.x+brick_width/2,collided_b.y+brick_height/2)
                 item_group.add(item1)
             collided_brick[0].kill()
@@ -158,7 +158,7 @@ class paddle(pg.sprite.Sprite):
     def update(self):
         self.move()
         self.draw()
-        self.item_collide()
+        #self.item_collide()
 #벽돌
 class brick(pg.sprite.Sprite):
     def __init__(self,x,y,width,height):
