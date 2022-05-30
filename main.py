@@ -2,6 +2,8 @@ import math
 import pygame as pg
 import time
 import random
+import numpy as np
+from Agent import agent
 pg.init()
 #색상 변수
 White = (255,255,255)
@@ -28,6 +30,12 @@ ball_vel = 6
 #소리
 game_over_sound = pg.mixer.Sound('C:\\Users\\jihun\\Desktop\\breakout\\sounds\\mixkit-retro-arcade-game-over-470.wav')
 play_game_over_sound = 1
+
+#agent initialize
+player = agent()
+
+
+
 class ball(pg.sprite.Sprite):
     def __init__(self,x,y,speed=6):
         pg.sprite.Sprite.__init__(self)
@@ -140,10 +148,12 @@ class paddle(pg.sprite.Sprite):
     def draw(self):
         pg.draw.rect(screen,White,self.rect)
     def move(self):
-        if keys[pg.K_RIGHT]:
+        player.move()
+        if player.action == 1: # right
             if self.rect.right<size[0]:
                 self.rect.x += self.vel
-        if keys[pg.K_LEFT]:
+
+        elif player.action == 0: # left
             if self.rect.left>0:
                 self.rect.x -= self.vel
     #아이템 충돌
@@ -220,17 +230,17 @@ heart = pg.transform.scale(heart, (70,70))
 #게임 시작화면
 msg_game_start = myfont.render("press spacebar to start game",True,White)
 msg_game_start_rect = msg_game_start.get_rect(center=(size[0]/2, size[1]/2))
-game_start = False
+game_start = True
 #게임 오버 화면
 msg_lose = myfont.render("GAME OVER!",True,White)
 msg_lose_rect = msg_lose.get_rect(center=(size[0]/2, size[1]/2))
-game_over = False
+restart = False
 #게임 성공 화면
 msg_win = myfont.render(f"CLEAR!",True,White)
 msg_win_rect = msg_win.get_rect(center=(size[0]/2, size[1]/2))
 
 #시간 체크
-check_time = time.time()
+start_time = time.time()
 
 #루프
 while done:
@@ -245,36 +255,30 @@ while done:
         elif event.type == pg.KEYDOWN:
             if event.key == pg.K_ESCAPE:
                 done = 0
-            if event.key == pg.K_SPACE or event.key == pg.K_RETURN:
-                if game_over:
-                    #초기화
-                    game_start = False
-                    game_over = False
-                    ball_group.empty()
-                    item_group.empty()
-                    ball1 = ball(size[0]/2,size[1]/3*2)
-                    ball_group.add(ball1)
-                    brick_group.empty()
-                    for row in range(brick_row):
-                        for column in range(brick_column):
-                            brick1 = brick(brick_interval+column*(brick_width+brick_interval),size[1]/10+brick_interval+row*(brick_height+brick_interval),\
-                                brick_width,brick_height)
-                            brick_group.add(brick1)
-                    score = 0
-                    life = 3
-                else:
-                    game_start = True
+            
+    #다시시작
+    if restart:
+        #초기화
+        game_start = True
+        ball_group.empty()
+        item_group.empty()
+        ball1 = ball(size[0]/2,size[1]/3*2)
+        ball_group.add(ball1)
+        brick_group.empty()
+        for row in range(brick_row):
+            for column in range(brick_column):
+                brick1 = brick(brick_interval+column*(brick_width+brick_interval),size[1]/10+brick_interval+row*(brick_height+brick_interval),\
+                    brick_width,brick_height)
+                brick_group.add(brick1)
+        score = 0
+        life = 3
+        restart = False
+
     #스크린 배경 색상
     screen.fill(Black)
-    #시간 처리
-    if 1.4<time.time()-check_time:
-        check_time = time.time()
+
     #게임 시작화면
-    if not game_start:
-        if 0.7>time.time()-check_time:
-            screen.blit(msg_game_start,msg_game_start_rect)
-        start_time = time.time()
-    elif not game_over and game_start:
+    if not restart and game_start:
         #공이 바닥에 떨어지면 생명-1,새로운 공 발사
         if not len(ball_group):
             life -=1
@@ -283,23 +287,20 @@ while done:
         
         #공 업데이트
         ball_group.update()
-    
+        #패들 업데이트
+        paddle_group.update()
+
     #하트 없어지면 '게임 오버' 메세지 출력 후시작 화면으로 
     if not life:
-        game_over = True
-        if 0.7>time.time()-check_time:
-            screen.blit(msg_lose,msg_lose_rect)
+        restart = True
+        
     
     #벽돌을 다 때면 종료
     if not len(brick_group):
-        game_over = True
-        if 0.7>time.time()-check_time:
-            screen.blit(msg_win,msg_win_rect)
-    
+        restart = True      #TODO: 벽돌을 다깨면 종료
         
     
-    #패들 업데이트
-    paddle_group.update()
+    
     #벽돌 업데이트
     brick_group.update()
     #아이템 업데이트
@@ -321,3 +322,10 @@ while done:
 pg.quit()
 
 
+"""
+---벽돌깨기 ai계획---
+    1.다시 사작(reset)기능 추가
+    2.보상(점수) 기능 추가
+    3.agent->play(action) 기능
+    4.게임 반복
+"""
