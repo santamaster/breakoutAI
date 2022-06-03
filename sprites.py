@@ -38,6 +38,8 @@ class ball(pg.sprite.Sprite):
         self.rect = pg.Rect(0,0,ball_size,ball_size)
         self.brick_collision_count = -1
         self.time = time.time()
+        self.vectorx = self.vel * math.cos(math.radians(self.degree))
+        self.vectory = self.vel * math.sin(math.radians(self.degree))
     #공 움직임
     def move(self):
         global ball_vel

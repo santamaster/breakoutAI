@@ -14,6 +14,13 @@ pg.display.set_caption("Break out")
 heart = pg.image.load(r"C:\\Users\\jihun\\Desktop\\breakout\\images\\heart.png").convert_alpha()#하트 사진 불러오기
 heart = pg.transform.scale(heart, (70,70))
 
+#
+def get_status():
+    #벽돌 
+    #공위치
+   
+    ball_sprite = ball_group.sprites()[0]
+    return np.append(brick_array,(ball_sprite.x,ball_sprite.y,ball_sprite.vectorx,ball_sprite.vectory))
 
 #시간 체크
 start_time = time.time()
@@ -38,6 +45,8 @@ while done:
     if restart:
         #초기화
         game_start = True
+        restart = False
+        
         ball_group.empty()
         item_group.empty()
         ball1 = ball(setting.size[0]/2,setting.size[1]/3*2)
@@ -49,23 +58,22 @@ while done:
                     brick_width,brick_height)
                 brick_group.add(brick1)
         setting.life = 3
-        restart = False
+        start_time = time.time()
+
 
     #스크린 배경 색상
     setting.screen.fill(Black)
 
-    #게임 시작화면
-    if not restart and game_start:
-        #공이 바닥에 떨어지면 생명-1,새로운 공 발사
-        if not len(ball_group):
-            setting.life -=1
-            ball1 = ball(setting.size[0]/2,setting.size[1]/3*2,speed=setting.ball_vel)
-            ball_group.add(ball1)
-            
-        #공 업데이트
-        ball_group.update()
-        #패들 업데이트
-        paddle_group.update()
+    #공이 바닥에 떨어지면 생명-1,새로운 공 발사
+    if not len(ball_group):
+        setting.life -=1
+        ball1 = ball(setting.size[0]/2,setting.size[1]/3*2,speed=setting.ball_vel)
+        ball_group.add(ball1)
+        
+    #공 업데이트
+    ball_group.update()
+    #패들 업데이트
+    paddle_group.update()
 
     #하트 없어지면 '게임 오버' 메세지 출력 후시작 화면으로 
     if not setting.life:
@@ -89,8 +97,6 @@ while done:
     msg_time = myfont.render("time : {}s".format(int(time.time()-start_time)+1),True,White)
     setting.screen.blit(msg_time,(setting.size[0]-200,40))
     pg.display.flip()
-
-
 pg.quit()
 
 """
