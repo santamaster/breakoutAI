@@ -14,13 +14,7 @@ pg.display.set_caption("Break out")
 heart = pg.image.load(r"C:\\Users\\jihun\\Desktop\\breakout\\images\\heart.png").convert_alpha()#하트 사진 불러오기
 heart = pg.transform.scale(heart, (70,70))
 
-#
-def get_status():
-    #벽돌 
-    #공위치
-   
-    ball_sprite = ball_group.sprites()[0]
-    return np.append(brick_array,(ball_sprite.x,ball_sprite.y,ball_sprite.vectorx,ball_sprite.vectory))
+
 
 #시간 체크
 start_time = time.time()
@@ -46,9 +40,8 @@ while done:
         #초기화
         game_start = True
         restart = False
-        
+        episode +=1
         ball_group.empty()
-        item_group.empty()
         ball1 = ball(setting.size[0]/2,setting.size[1]/3*2)
         ball_group.add(ball1)
         brick_group.empty()
@@ -69,11 +62,11 @@ while done:
         setting.life -=1
         ball1 = ball(setting.size[0]/2,setting.size[1]/3*2,speed=setting.ball_vel)
         ball_group.add(ball1)
-        
+    #패들 업데이트(에이전트 업데이트)
+    paddle_group.update()    
     #공 업데이트
     ball_group.update()
-    #패들 업데이트
-    paddle_group.update()
+    
 
     #하트 없어지면 '게임 오버' 메세지 출력 후시작 화면으로 
     if not setting.life:
@@ -84,8 +77,6 @@ while done:
 
     #벽돌 업데이트
     brick_group.update()
-    #아이템 업데이트
-    item_group.update()
 
     #하트 업데이트
     for i in range(setting.life,0,-1):

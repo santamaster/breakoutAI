@@ -10,3 +10,4 @@ life = 3
 ball_vel = 6
 brick_column = 12
 brick_row = 5
+episode = 1
